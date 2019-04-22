@@ -219,7 +219,7 @@ class ViewController: UIViewController,
         let numberFormatter = NumberFormatter()
         self.descriptionLabel.text = weather.description
         
-        self.tempLabel.text = numberFormatter.string(for: weather.tempF)
+        self.tempLabel.text = numberFormatter.string(for: weather.tempF) ?? "nil" + "˚"
         self.humidityLabel.text = "Humidity: \(numberFormatter.string(for: weather.humidity) ?? "nil")%"
         self.windLabel.text = "Wind: \(numberFormatter.string(for: weather.windSpeed) ?? "nil")mph"
         self.iconImageView.image = UIImage(named: weather.icon)
