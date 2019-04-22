@@ -40,16 +40,17 @@ class WeatherService {
         // Put together a URL With lat and lon
         let path = "http://api.openweathermap.org/data/2.5/weather?lat=\(lat)&lon=\(lon)&appid=\(appid)"
         
-        getWeatherWithPath(path)
+        getWeatherWithPath(path: path)
     }
     
     
     /** Formats an API call to the OpenWeatherMap service. Pass in a string in the form City Name, Country. */
     func getWeatherForCity(city: String) {
-        if let cityEscaped = city.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet()) {
+        let cityString: NSString = city as NSString
+        if let cityEscaped = cityString.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlHostAllowed) {
             let path = "http://api.openweathermap.org/data/2.5/weather?q=\(cityEscaped)&appid=\(appid)"
             
-            getWeatherWithPath(path)
+            getWeatherWithPath(path: path)
         }
         
        
@@ -58,22 +59,20 @@ class WeatherService {
     /** This Method retrieves weather data from an API path. */
     func getWeatherWithPath(path: String) {
         // Create a URL, Session, and Data task.
-        let url = NSURL(string: path)
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithURL(url!) {
-            (data: NSData?, response: NSURLResponse?, error: NSError?) -> Void in
+        let url = URL(string: path)!
+        let session = URLSession.shared
+        let task = session.dataTask(with: url) { (data, response, error) in
             
             // Handle an HTTP status response.
-            if let httpResponse = response as? NSHTTPURLResponse {
+            if let httpResponse = response as? HTTPURLResponse {
                 print("*******")
                 print(httpResponse.statusCode)
                 print("*******")
             }
             
             // Check for nil data
-            let json = JSON(data: data!)
-            // print(json)
-            if json == nil {
+            guard let json = try? JSON(data: data!) else {
+                // print(json)
                 return
             }
             
@@ -122,24 +121,24 @@ class WeatherService {
                 if self.delegate != nil {
                     // The Session runs on a background thread move back to the main queue
                     // and pass the weather to our delegate.
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        self.delegate?.setWeather(weather)
+                    DispatchQueue.main.async(execute: {
+                        self.delegate?.setWeather(weather: weather)
                     })
                 }
 
             } else if status == 404 {
                 // City not found
                 if self.delegate != nil {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        self.delegate?.weatherErrorWithMessage("City not found")
+                    DispatchQueue.main.async(execute: {
+                        self.delegate?.weatherErrorWithMessage(message: "City not found")
                     })
                 }
                 
             } else {
                 // Some other here?
                 if self.delegate != nil {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        self.delegate?.weatherErrorWithMessage("Something went wrong?")
+                    DispatchQueue.main.async(execute: {
+                        self.delegate?.weatherErrorWithMessage(message: "Something went wrong?")
                     })
                 }
                 

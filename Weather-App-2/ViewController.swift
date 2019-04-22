@@ -65,22 +65,22 @@ class ViewController: UIViewController,
     /** This method opens an alert dialog and asks for the city name, or location. */
     
     func openSetWeatherAlert() {
-        let alert = UIAlertController(title: "Get Weather", message: "Enter City, or use your location!", preferredStyle: .Alert)
+        let alert = UIAlertController(title: "Get Weather", message: "Enter City, or use your location!", preferredStyle: .alert)
         
-        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
-        let ok = UIAlertAction(title: "OK", style: .Default) { (action: UIAlertAction) -> Void in
+        let ok = UIAlertAction(title: "OK", style: .default) { (action: UIAlertAction) -> Void in
             let textField = alert.textFields![0]
             let city = textField.text
-            self.weatherService.getWeatherForCity(city!)
+            self.weatherService.getWeatherForCity(city: city!)
         }
         
-        let location = UIAlertAction(title: "Use Location", style: .Default) { (action: UIAlertAction) -> Void in
+        let location = UIAlertAction(title: "Use Location", style: .default) { (action: UIAlertAction) -> Void in
             //
             self.getGPSLocation()
         }
         
-        alert.addTextFieldWithConfigurationHandler { (textField: UITextField) -> Void in
+        alert.addTextField { (textField: UITextField) -> Void in
             textField.placeholder = "City Name, Country"
         }
         
@@ -88,7 +88,7 @@ class ViewController: UIViewController,
         alert.addAction(ok)
         alert.addAction(location)
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
     
@@ -103,14 +103,14 @@ class ViewController: UIViewController,
         let picker = UIImagePickerController()
         picker.delegate = self
         picker.allowsEditing = false
-        picker.sourceType = .Camera
-        self.presentViewController(picker, animated: true, completion: nil)
+        picker.sourceType = .camera
+        self.present(picker, animated: true, completion: nil)
     }
     
     /** Handles results from the photopicker. */
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         self.backgroundImageView.image = image
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     /** Use this button to share the weather on Twitter, Email, or SMS */
@@ -124,17 +124,17 @@ class ViewController: UIViewController,
     
     /** Opens an Actionsheet with sharing options. */
     func openSharingAlert() {
-        let alert = UIAlertController(title: "Share the Weather", message: "", preferredStyle: .ActionSheet)
-        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-        let tweet = UIAlertAction(title: "Tweet", style: .Default) { (action: UIAlertAction) -> Void in
+        let alert = UIAlertController(title: "Share the Weather", message: "", preferredStyle: .actionSheet)
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let tweet = UIAlertAction(title: "Tweet", style: .default) { (action: UIAlertAction) -> Void in
             //
             self.tweetWeather()
         }
-        let email = UIAlertAction(title: "Email", style: .Default) { (action:UIAlertAction) -> Void in
+        let email = UIAlertAction(title: "Email", style: .default) { (action:UIAlertAction) -> Void in
             // 
             self.emailWeather()
         }
-        let sms = UIAlertAction(title: "SMS", style: .Default) { (action: UIAlertAction) -> Void in
+        let sms = UIAlertAction(title: "SMS", style: .default) { (action: UIAlertAction) -> Void in
             // 
             self.smsWeather()
         }
@@ -144,7 +144,7 @@ class ViewController: UIViewController,
         alert.addAction(email)
         alert.addAction(sms)
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
     /** Use this method to Tweet the weather. */
@@ -193,7 +193,7 @@ class ViewController: UIViewController,
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         print("Did update locations")
         print(locations)
-        self.weatherService.getWeatherForLocation(locations[0])
+        self.weatherService.getWeatherForLocation(location: locations[0])
         locationManager.stopUpdatingLocation()
     }
     
@@ -208,23 +208,23 @@ class ViewController: UIViewController,
     // MARK: WeatherService Delegate methods
     /** Handles error message from Weather Service instance. */
     func weatherErrorWithMessage(message: String) {
-        let alert = UIAlertController(title: "Weather Service Error", message: message, preferredStyle: .Alert)
-        let ok = UIAlertAction(title: "OK", style: .Default, handler: nil)
+        let alert = UIAlertController(title: "Weather Service Error", message: message, preferredStyle: .alert)
+        let ok = UIAlertAction(title: "OK", style: .default, handler: nil)
         alert.addAction(ok)
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
     /**  */
     func setWeather(weather: Weather) {
-        let numberFormatter = NSNumberFormatter()
+        let numberFormatter = NumberFormatter()
         self.descriptionLabel.text = weather.description
         
-        self.tempLabel.text = numberFormatter.stringFromNumber(weather.tempF)!
-        self.humidityLabel.text = "Humidity: \(numberFormatter.stringFromNumber(weather.humidity)!)%"
-        self.windLabel.text = "Wind: \(numberFormatter.stringFromNumber(weather.windSpeed)!)mph"
+        self.tempLabel.text = numberFormatter.string(for: weather.tempF)
+        self.humidityLabel.text = "Humidity: \(numberFormatter.string(for: weather.humidity) ?? "nil")%"
+        self.windLabel.text = "Wind: \(numberFormatter.string(for: weather.windSpeed) ?? "nil")mph"
         self.iconImageView.image = UIImage(named: weather.icon)
         print("icon:"+weather.icon)
-        self.cityButton.setTitle(weather.cityName, forState: .Normal)
+        self.cityButton.setTitle(weather.cityName, for: .normal)
         
         self.weather = weather
     }
@@ -235,11 +235,11 @@ class ViewController: UIViewController,
     
     func takeScreenshot(theView: UIView) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(theView.bounds.size, true, 0.0)
-        theView.drawViewHierarchyInRect(theView.bounds, afterScreenUpdates: true)
+        theView.drawHierarchy(in: theView.bounds, afterScreenUpdates: true)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return image
+        return image!
     }
     
     
@@ -268,11 +268,11 @@ class ViewController: UIViewController,
 extension UIView {
     func takeScreenshot() -> UIImage {
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, 0.0)
-        self.drawViewHierarchyInRect(self.bounds, afterScreenUpdates: true)
+        self.drawHierarchy(in: self.bounds, afterScreenUpdates: true)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return image
+        return image!
     }
 }
 
