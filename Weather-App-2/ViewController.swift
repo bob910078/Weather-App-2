@@ -8,7 +8,6 @@
 
 //  Last Update 020516
 
-// TODO: Clear initial screen, show button to load weather.
 // TODO: Save weather location in NSUserDefaults
 // TODO: Add SMS
 // TODO: Add email
@@ -21,7 +20,7 @@ import UIKit
 import Social
 import CoreLocation // 1 import CoreLocation
 
-// 4 Add Persmission Keys to info plist 
+// 4 Add Persmission Keys to info plist
 // “NSLocationWhenInUseUsageDescription” or “NSLocationAlwaysUsageDescription”
 
 // 2 Add the delegate protocol
@@ -48,6 +47,45 @@ class ViewController: UIViewController,
     @IBOutlet weak var cityButton: UIButton!
     @IBOutlet weak var backgroundImageView: UIImageView!
     
+    // MARK: Life cycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.initialLayout()
+        self.weatherService.delegate = self
+        
+        // 5 Set delegate and authorization
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestAlwaysAuthorization()
+        
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    
+    private func initialLayout() {
+        self.descriptionLabel.isHidden = true
+        self.iconImageView.isHidden = true
+        self.tempLabel.isHidden = true
+        self.humidityLabel.isHidden = true
+        self.windLabel.isHidden = true
+        self.cityButton.isHidden = false
+        self.cityButton.setTitle("Press to enter a city", for: .normal)
+    }
+    
+    private func nonInitialLayout() {
+        self.descriptionLabel.isHidden = false
+        self.iconImageView.isHidden = false
+        self.tempLabel.isHidden = false
+        self.humidityLabel.isHidden = false
+        self.windLabel.isHidden = false
+        self.cityButton.isHidden = false
+    }
     
     // MARK: IBActions
     
@@ -225,6 +263,7 @@ class ViewController: UIViewController,
         self.iconImageView.image = UIImage(named: weather.icon)
         self.cityButton.setTitle(weather.cityName, for: .normal)
         self.weather = weather
+        self.nonInitialLayout()
     }
     
     
@@ -244,22 +283,6 @@ class ViewController: UIViewController,
     
     
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.weatherService.delegate = self
-        
-        
-        // 5 Set delegate and authorization
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestAlwaysAuthorization()
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
 }
 
 
