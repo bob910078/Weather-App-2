@@ -26,7 +26,6 @@ import CoreLocation // 1 import CoreLocation
 // 2 Add the delegate protocol
 class ViewController: UIViewController,
     CLLocationManagerDelegate,
-    WeatherServiceDelegate,
     UIImagePickerControllerDelegate, // For image picker
     UINavigationControllerDelegate {   // For image picker
     
@@ -93,7 +92,7 @@ class ViewController: UIViewController,
     
     /** Handles taps on the City button */
     
-    @IBAction func cityButtonTapped(sender: AnyObject) {
+    @IBAction func cityButtonTapped(sender: UIButton) {
         print("City button")
         openSetWeatherAlert()
     }
@@ -241,63 +240,32 @@ class ViewController: UIViewController,
     }
     
     
+}
+
+
+
+extension ViewController: WeatherServiceDelegate {
     
-    
-    // MARK: WeatherService Delegate methods
-    /** Handles error message from Weather Service instance. */
-    func weatherErrorWithMessage(message: String) {
-        let alert = UIAlertController(title: "Weather Service Error", message: message, preferredStyle: .alert)
-        let ok = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alert.addAction(ok)
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    /**  */
+    /// If weather service request success will return.
+    ///
+    /// - Parameter weather: weather data be structed by ourself from "openweathermap.org"
     func setWeather(weather: Weather) {
-        
         self.descriptionLabel.text  = weather.description
         self.tempLabel.text         = String(format: "%.1f˚", weather.tempF)
         self.humidityLabel.text     = String(format: "Humidity: %.0f%", weather.humidity)
         self.windLabel.text         = String(format: "Wind: %.0fmph", weather.windSpeed)
-        
         self.iconImageView.image = UIImage(named: weather.icon)
         self.cityButton.setTitle(weather.cityName, for: .normal)
         self.weather = weather
         self.nonInitialLayout()
     }
     
-    
-    
-    // MARK: Screenshot
-    
-    func takeScreenshot(theView: UIView) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(theView.bounds.size, true, 0.0)
-        theView.drawHierarchy(in: theView.bounds, afterScreenUpdates: true)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return image!
+    /// Handles error message from Weather Service instance.
+    ///
+    /// - Parameter message: error message sent from WeatherSerivce
+    func weatherErrorWithMessage(message: String) {
+        self.basicAlert(title: "Weather Service Error", message: message)
     }
     
-    
-    
-    
-
 }
-
-
-extension UIView {
-    func takeScreenshot() -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, 0.0)
-        self.drawHierarchy(in: self.bounds, afterScreenUpdates: true)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return image!
-    }
-}
-
-
-
-
 
