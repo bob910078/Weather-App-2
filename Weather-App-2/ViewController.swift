@@ -32,7 +32,7 @@ class ViewController: UIViewController,
     // 3 Make a location manager
     let locationManager = CLLocationManager()
     // Make an instance of WeatherService with your OpenWeatherMap ID.
-    var weatherService = WeatherService(appid: "05a1f2ada9a00ef2a30138d26e5814e4")
+    var weatherService: WeatherServiceInterface = WeatherService()
     var weather: Weather?
     
     
@@ -108,8 +108,8 @@ class ViewController: UIViewController,
         
         let ok = UIAlertAction(title: "OK", style: .default) { (action: UIAlertAction) -> Void in
             let textField = alert.textFields![0]
-            let city = textField.text
-            self.weatherService.getWeatherForCity(city: city!)
+            let cityText = textField.text!
+            self.weatherService.getWeather(for: cityText)
         }
         
         let location = UIAlertAction(title: "Use Location", style: .default) { (action: UIAlertAction) -> Void in
@@ -230,7 +230,7 @@ class ViewController: UIViewController,
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         print("Did update locations")
         print(locations)
-        self.weatherService.getWeatherForLocation(location: locations[0])
+        self.weatherService.getWeather(for: locations[0])
         locationManager.stopUpdatingLocation()
     }
     

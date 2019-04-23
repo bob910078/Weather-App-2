@@ -22,42 +22,60 @@
 import UIKit
 import CoreLocation
 
-class WeatherService {
-    // Set your appid
-    let appid: String
+typealias City = String
+typealias Location = CLLocation
+
+protocol WeatherServiceInterface {
+    var delegate: WeatherServiceDelegate? { get set }
+    func getWeather(for location: CLLocation)
+    func getWeather(for city: String)
+}
+
+class WeatherService: WeatherServiceInterface {
+    
     var delegate: WeatherServiceDelegate?
     
-    /** Initial a WeatherService instance with your OpenWeatherMap app id. */
-    init(appid: String) {
-        self.appid = appid
-    }
-    
-    /** Formats an API call to the OpenWeatherMap service. Pass in a CLLocation to retrieve weather data for that location.  */
-    func getWeatherForLocation(location: CLLocation) {
+    /// Formats an API call to the OpenWeatherMap service.
+    ///
+    /// - Parameter location: to retrieve weather data for that location.
+    func getWeather(for location: Location) {
+        
         let lat = location.coordinate.latitude
         let lon = location.coordinate.longitude
         
         // Put together a URL With lat and lon
-        let path = "http://api.openweathermap.org/data/2.5/weather?lat=\(lat)&lon=\(lon)&appid=\(appid)"
+        let path = openweathermapURL.absoluteString + "?lat=\(lat)&lon=\(lon)&appid=\(appid)"
         
         getWeatherWithPath(path: path)
     }
     
-    
-    /** Formats an API call to the OpenWeatherMap service. Pass in a string in the form City Name, Country. */
-    func getWeatherForCity(city: String) {
+    /// Formats an API call to the OpenWeatherMap service.
+    ///
+    /// - Parameter city: Pass in a string in the form City Name, Country.
+    func getWeather(for city: City) {
+        
         let cityString: NSString = city as NSString
         if let cityEscaped = cityString.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlHostAllowed) {
-            let path = "http://api.openweathermap.org/data/2.5/weather?q=\(cityEscaped)&appid=\(appid)"
-            
+            let path = openweathermapURL.absoluteString + "?q=\(cityEscaped)&appid=\(appid)"
             getWeatherWithPath(path: path)
         }
         
-       
+    }
+    
+    private var appid: String {
+        return "05a1f2ada9a00ef2a30138d26e5814e4"
+    }
+    
+    private var openweathermapURL: URL {
+        if let websiteUrl = URL.init(string: "http://api.openweathermap.org/data/2.5/weather") {
+            return websiteUrl
+        } else {
+            fatalError("something wrong with the website url")
+        }
     }
     
     /** This Method retrieves weather data from an API path. */
-    func getWeatherWithPath(path: String) {
+    private func getWeatherWithPath(path: String) {
         // Create a URL, Session, and Data task.
         let url = URL(string: path)!
         let session = URLSession.shared
