@@ -88,7 +88,7 @@
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="28"/>
                                         <state key="normal" title="San Franscisco"/>
                                         <connections>
-                                            <action selector="cityButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ONj-lh-g1T"/>
+                                            <action selector="cityButtonTappedWithSender:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0nD-vS-tvX"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -104,6 +104,15 @@
                             <constraint firstAttribute="bottom" secondItem="lc3-Zl-dOf" secondAttribute="bottom" id="z7x-gh-Ndy"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="backgroundImageView" destination="lc3-Zl-dOf" id="Jsa-OH-XEW"/>
+                        <outlet property="cityButton" destination="KTy-HT-xcf" id="xgi-5n-eCE"/>
+                        <outlet property="descriptionLabel" destination="piH-wb-QPV" id="Mi9-H5-BtY"/>
+                        <outlet property="humidityLabel" destination="ves-NN-XUC" id="Hqm-C3-hwR"/>
+                        <outlet property="iconImageView" destination="mAK-Zg-mMs" id="k90-WU-27c"/>
+                        <outlet property="tempLabel" destination="fE5-3c-AA0" id="Fwb-6U-4Bh"/>
+                        <outlet property="windLabel" destination="xlJ-29-LkM" id="fmD-gb-KcT"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

@@ -29,7 +29,7 @@ import Foundation
 
 struct Weather {
     let cityName: String
-    let temp: Double
+    let temp: Double        // Kelvin degree
     let description: String
     let icon: String
     let clouds: Double
@@ -50,7 +50,7 @@ struct Weather {
     
     var tempF: Double {
         get {
-            return tempC * 9/5 + 32
+            return (temp - 273.15) * 9/5 + 32
         }
     }
     

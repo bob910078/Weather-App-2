@@ -34,7 +34,7 @@ class ViewController: UIViewController,
     // 3 Make a location manager
     let locationManager = CLLocationManager()
     // Make an instance of WeatherService with your OpenWeatherMap ID.
-    var weatherService = WeatherService(appid: "2854c5771899ff92cd962dd7ad58e7b0")
+    var weatherService = WeatherService(appid: "05a1f2ada9a00ef2a30138d26e5814e4")
     var weather: Weather?
     
     
@@ -216,16 +216,14 @@ class ViewController: UIViewController,
     
     /**  */
     func setWeather(weather: Weather) {
-        let numberFormatter = NumberFormatter()
-        self.descriptionLabel.text = weather.description
         
-        self.tempLabel.text = numberFormatter.string(for: weather.tempF) ?? "nil" + "˚"
-        self.humidityLabel.text = "Humidity: \(numberFormatter.string(for: weather.humidity) ?? "nil")%"
-        self.windLabel.text = "Wind: \(numberFormatter.string(for: weather.windSpeed) ?? "nil")mph"
+        self.descriptionLabel.text  = weather.description
+        self.tempLabel.text         = String(format: "%.1f˚", weather.tempF)
+        self.humidityLabel.text     = String(format: "Humidity: %.0f%", weather.humidity)
+        self.windLabel.text         = String(format: "Wind: %.0fmph", weather.windSpeed)
+        
         self.iconImageView.image = UIImage(named: weather.icon)
-        print("icon:"+weather.icon)
         self.cityButton.setTitle(weather.cityName, for: .normal)
-        
         self.weather = weather
     }
     

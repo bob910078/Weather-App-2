@@ -63,6 +63,12 @@ class WeatherService {
         let session = URLSession.shared
         let task = session.dataTask(with: url) { (data, response, error) in
             
+            #if DEBUG
+            if let d = data, let t = String(data: d, encoding: String.Encoding.utf8) {
+                print(t)
+            }
+            #endif
+            
             // Handle an HTTP status response.
             if let httpResponse = response as? HTTPURLResponse {
                 print("*******")
