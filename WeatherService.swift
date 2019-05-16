@@ -19,19 +19,9 @@
 // TODO: Use an enum for weather icons.
 
 
-import UIKit
-import CoreLocation
+import Foundation
 
-typealias City = String
-typealias Location = CLLocation
-
-protocol WeatherServiceInterface {
-    var delegate: WeatherServiceDelegate? { get set }
-    func getWeather(for location: CLLocation)
-    func getWeather(for city: String)
-}
-
-class WeatherService: WeatherServiceInterface {
+class WeatherService: OpenWeatherMapService {
     
     var delegate: WeatherServiceDelegate?
     
@@ -60,18 +50,6 @@ class WeatherService: WeatherServiceInterface {
             getWeatherWithPath(path: path)
         }
         
-    }
-    
-    private var appid: String {
-        return "05a1f2ada9a00ef2a30138d26e5814e4"
-    }
-    
-    private var openweathermapURL: URL {
-        if let websiteUrl = URL.init(string: "http://api.openweathermap.org/data/2.5/weather") {
-            return websiteUrl
-        } else {
-            fatalError("something wrong with the website url")
-        }
     }
     
     /** This Method retrieves weather data from an API path. */

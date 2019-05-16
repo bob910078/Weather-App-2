@@ -17,6 +17,7 @@
 		7BFBFCE91BF5003A00F72B29 /* Weather_App_2.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7BFBFCE71BF5003A00F72B29 /* Weather_App_2.xcdatamodeld */; };
 		7BFBFCEB1BF5003A00F72B29 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7BFBFCEA1BF5003A00F72B29 /* Assets.xcassets */; };
 		7BFBFCEE1BF5003A00F72B29 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7BFBFCEC1BF5003A00F72B29 /* LaunchScreen.storyboard */; };
+		C6012129228D2F85005B6F05 /* NetworkServiceInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6012128228D2F85005B6F05 /* NetworkServiceInterface.swift */; };
 		C6B7CD6B226EAF0300C55DBC /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B7CD6A226EAF0300C55DBC /* Extensions.swift */; };
 		C6E8D985227C4BDF00296BBA /* Weather_App_2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E8D984227C4BDF00296BBA /* Weather_App_2Tests.swift */; };
 /* End PBXBuildFile section */
@@ -44,6 +45,7 @@
 		7BFBFCEA1BF5003A00F72B29 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7BFBFCED1BF5003A00F72B29 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7BFBFCEF1BF5003A00F72B29 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C6012128228D2F85005B6F05 /* NetworkServiceInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceInterface.swift; sourceTree = "<group>"; };
 		C6B7CD6A226EAF0300C55DBC /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C6E8D982227C4BDF00296BBA /* Weather-App-2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Weather-App-2Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6E8D984227C4BDF00296BBA /* Weather_App_2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather_App_2Tests.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 				7BFBFCE21BF5003A00F72B29 /* ViewController.swift */,
 				7B139BB81BF6D79400F1D281 /* WeatherServiceDelegate.swift */,
 				C6B7CD6A226EAF0300C55DBC /* Extensions.swift */,
+				C6012128228D2F85005B6F05 /* NetworkServiceInterface.swift */,
 				7B139BB21BF65F7700F1D281 /* WeatherService.swift */,
 				7B139BB41BF65FE200F1D281 /* Weather.swift */,
 				7B139BB61BF6639E00F1D281 /* SwiftyJSON.swift */,
@@ -228,6 +231,7 @@
 				7B139BB31BF65F7700F1D281 /* WeatherService.swift in Sources */,
 				7BFBFCE91BF5003A00F72B29 /* Weather_App_2.xcdatamodeld in Sources */,
 				7B139BB91BF6D79400F1D281 /* WeatherServiceDelegate.swift in Sources */,
+				C6012129228D2F85005B6F05 /* NetworkServiceInterface.swift in Sources */,
 				C6B7CD6B226EAF0300C55DBC /* Extensions.swift in Sources */,
 				7BFBFCE31BF5003A00F72B29 /* ViewController.swift in Sources */,
 				7B139BB51BF65FE200F1D281 /* Weather.swift in Sources */,
