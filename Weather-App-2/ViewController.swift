@@ -245,21 +245,25 @@ extension ViewController: WeatherServiceDelegate {
     ///
     /// - Parameter weather: weather data be structed by ourself from "openweathermap.org"
     func setWeather(weather: Weather) {
-        self.descriptionLabel.text  = weather.description
-        self.tempLabel.text         = String(format: "%.1f˚", weather.tempF)
-        self.humidityLabel.text     = String(format: "Humidity: %.0f%", weather.humidity)
-        self.windLabel.text         = String(format: "Wind: %.0fmph", weather.windSpeed)
-        self.iconImageView.image = UIImage(named: weather.icon)
-        self.cityButton.setTitle(weather.cityName, for: .normal)
-        self.weather = weather
-        self.nonInitialLayout()
+        DispatchQueue.main.async {
+            self.descriptionLabel.text  = weather.description
+            self.tempLabel.text         = String(format: "%.1f˚", weather.tempF)
+            self.humidityLabel.text     = String(format: "Humidity: %.0f%", weather.humidity)
+            self.windLabel.text         = String(format: "Wind: %.0fmph", weather.windSpeed)
+            self.iconImageView.image = UIImage(named: weather.icon)
+            self.cityButton.setTitle(weather.cityName, for: .normal)
+            self.weather = weather
+            self.nonInitialLayout()
+        }
     }
     
     /// Handles error message from Weather Service instance.
     ///
     /// - Parameter message: error message sent from WeatherSerivce
     func weatherErrorWithMessage(message: String) {
-        self.basicAlert(title: "Weather Service Error", message: message)
+        DispatchQueue.main.async {
+            self.basicAlert(title: "Weather Service Error", message: message)
+        }
     }
     
 }

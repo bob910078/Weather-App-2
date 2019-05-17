@@ -93,30 +93,15 @@ class WeatherService: OpenWeatherMapService {
         
         switch parser.statusCode {
         case 200:
-            // Check the delegate has been set.
-            if self.delegate != nil {
-                // The Session runs on a background thread move back to the main queue
-                // and pass the weather to our delegate.
-                DispatchQueue.main.async(execute: {
-                    self.delegate?.setWeather(weather: parser.weatherData!)
-                })
-            }
+            self.delegate?.setWeather(weather: parser.weatherData!)
             
         case 404:
             // City not found
-            if self.delegate != nil {
-                DispatchQueue.main.async(execute: {
-                    self.delegate?.weatherErrorWithMessage(message: "City not found")
-                })
-            }
+            self.delegate?.weatherErrorWithMessage(message: "City not found")
             
         default:
             // Some other here?
-            if self.delegate != nil {
-                DispatchQueue.main.async(execute: {
-                    self.delegate?.weatherErrorWithMessage(message: "Something went wrong?")
-                })
-            }
+            self.delegate?.weatherErrorWithMessage(message: "Something went wrong?")
             
         }
         
