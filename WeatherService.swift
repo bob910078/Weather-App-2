@@ -36,7 +36,9 @@ class WeatherService: OpenWeatherMapService {
         // Put together a URL With lat and lon
         let path = openweathermapURL.absoluteString + "?lat=\(lat)&lon=\(lon)&appid=\(appid)"
         
-        getWeatherWithPath(path: path)
+        getWeatherWithPath(path: path, completion: { (data, response, error) in
+            self.handleWeatherResponse(data: data, response: response, error: error)
+        })
     }
     
     /// Formats an API call to the OpenWeatherMap service.
@@ -47,13 +49,15 @@ class WeatherService: OpenWeatherMapService {
         let cityString: NSString = city as NSString
         if let cityEscaped = cityString.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlHostAllowed) {
             let path = openweathermapURL.absoluteString + "?q=\(cityEscaped)&appid=\(appid)"
-            getWeatherWithPath(path: path)
+            getWeatherWithPath(path: path, completion: { (data, response, error) in
+                self.handleWeatherResponse(data: data, response: response, error: error)
+            })
         }
         
     }
     
     /** This Method retrieves weather data from an API path. */
-    private func getWeatherWithPath(path: String) {
+    private func getWeatherWithPath(path: String, completion: @escaping (Data?, URLResponse?, Error?) -> Void) {
         // Create a URL, Session, and Data task.
         let url = URL(string: path)!
         let session = URLSession.shared
@@ -65,91 +69,57 @@ class WeatherService: OpenWeatherMapService {
             }
             #endif
             
-            // Handle an HTTP status response.
-            if let httpResponse = response as? HTTPURLResponse {
-                print("*******")
-                print(httpResponse.statusCode)
-                print("*******")
+            completion(data, response, error)
+        }
+        
+        // *** This starts the data session ***
+        task.resume()
+    }
+    
+    
+    private func handleWeatherResponse(data: Data?, response: URLResponse?, error: Error?) {
+        
+        // Handle an HTTP status response.
+        if let httpResponse = response as? HTTPURLResponse {
+            print("*******")
+            print(httpResponse.statusCode)
+            print("*******")
+        }
+        
+        
+        guard let parser = SwiftyJSONWeatherParser(JSONData: data!) else {
+            fatalError()
+        }
+        
+        switch parser.statusCode {
+        case 200:
+            // Check the delegate has been set.
+            if self.delegate != nil {
+                // The Session runs on a background thread move back to the main queue
+                // and pass the weather to our delegate.
+                DispatchQueue.main.async(execute: {
+                    self.delegate?.setWeather(weather: parser.weatherData!)
+                })
             }
             
-            // Check for nil data
-            guard let json = try? JSON(data: data!) else {
-                // print(json)
-                return
+        case 404:
+            // City not found
+            if self.delegate != nil {
+                DispatchQueue.main.async(execute: {
+                    self.delegate?.weatherErrorWithMessage(message: "City not found")
+                })
             }
             
-            // Get the cod code: 401 Unauthorized, 404 file not found, 200 Ok!
-            // ! OpenWeatherMap returns 404 as a string but 401 and 200 are Int!?
-            var status = 0
-            
-            if let cod = json["cod"].int {
-                status = cod
-            } else if let cod = json["cod"].string {
-                status = Int(cod)!
-            }
-            
-            // Check status
-            // print("Weather status code:\(status)")
-            if status == 200 {
-                // everything is ok get the weather data from the json data.
-                let _ = json["coord"]["lon"].double
-                let _ = json["coord"]["lat"].double
-                let temp = json["main"]["temp"].double
-                let tempMin = json["main"]["temp_min"].double
-                let tempMax = json["main"]["temp_max"].double
-                let humidity = json["main"]["humidity"].double
-                let pressure = json["main"]["pressure"].double
-                let name = json["name"].string
-                let desc = json["weather"][0]["description"].string
-                let icon = json["weather"][0]["icon"].string
-                let clouds = json["clouds"]["all"].double
-                let windSpeed = json["wind"]["speed"].double
-                
-                // Create a Weather struct to pass to the delegate.
-                let weather = Weather(
-                    cityName: name!,
-                    temp: temp!,
-                    description: desc!,
-                    icon: icon!,
-                    clouds: clouds!,
-                    tempMin: tempMin!,
-                    tempMax: tempMax!,
-                    humidity: humidity!,
-                    pressure: pressure!,
-                    windSpeed: windSpeed!
-                )
-                
-                // Check the delegate has been set.
-                if self.delegate != nil {
-                    // The Session runs on a background thread move back to the main queue
-                    // and pass the weather to our delegate.
-                    DispatchQueue.main.async(execute: {
-                        self.delegate?.setWeather(weather: weather)
-                    })
-                }
-
-            } else if status == 404 {
-                // City not found
-                if self.delegate != nil {
-                    DispatchQueue.main.async(execute: {
-                        self.delegate?.weatherErrorWithMessage(message: "City not found")
-                    })
-                }
-                
-            } else {
-                // Some other here?
-                if self.delegate != nil {
-                    DispatchQueue.main.async(execute: {
-                        self.delegate?.weatherErrorWithMessage(message: "Something went wrong?")
-                    })
-                }
-                
+        default:
+            // Some other here?
+            if self.delegate != nil {
+                DispatchQueue.main.async(execute: {
+                    self.delegate?.weatherErrorWithMessage(message: "Something went wrong?")
+                })
             }
             
         }
         
-        // *** This starts the data session *** 
-        task.resume()
     }
     
 }
